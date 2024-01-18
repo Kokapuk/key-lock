@@ -1,0 +1,7 @@
+<resources>
+  <color name="splashscreen_background">#ffffff</color>
+  <color name="iconBackground">#ffffff</color>
+  <color name="colorPrimary">#175ddc</color>
+  <color name="colorPrimaryDark">#ffffff</color>
+  <color name="scrollbarThumbColor">#404040</color>
+</resources>

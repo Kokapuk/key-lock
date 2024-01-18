@@ -1,20 +1,52 @@
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Header from './components/Header';
+import Home from './screens/Home';
+import SignIn from './screens/SignIn';
+import StyleVars from './styles/styleVars';
+import SignUp from './screens/SignUp';
+import * as SystemUI from 'expo-system-ui';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+const Stack = createNativeStackNavigator();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+const theme = {
+  ...DefaultTheme,
+  dark: true,
+  colors: {
+    ...DefaultTheme.colors,
+    background: 'transparent'
   },
-});
+};
+
+const App = () => {
+  useEffect(() => {
+    SystemUI.setBackgroundColorAsync(StyleVars.bgDark);
+  }, []);
+
+  return (
+    <>
+      <StatusBar style="light" />
+      <SafeAreaProvider>
+        <NavigationContainer theme={theme}>
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: { backgroundColor: StyleVars.bgDark },
+              headerShadowVisible: false,
+              navigationBarColor: StyleVars.bgDark,
+              animationDuration: StyleVars.animationDuration,
+            }}
+          >
+            <Stack.Screen name="Sign In" component={SignIn} options={{ headerShown: false }} />
+            <Stack.Screen name="Sign Up" component={SignUp} options={{ headerShown: false, animation: 'fade' }} />
+            <Stack.Screen name="Home" component={Home} options={{ header: () => <Header /> }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </>
+  );
+};
+
+export default App;
