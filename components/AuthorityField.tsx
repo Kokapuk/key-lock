@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import StyleVars from '@/styles/styleVars';
+import { forwardRef, useState } from 'react';
+import { StyleSheet, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import StyleVars from '../styles/styleVars';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 interface Props {
@@ -9,7 +9,21 @@ interface Props {
   secureTextEntry?: boolean;
 }
 
-const AuthorityField = ({ label, secureTextEntry: defaultSecureTextEntry }: Props) => {
+const AuthorityField = forwardRef<
+  TextInput,
+  Props &
+    Omit<
+      TextInputProps,
+      | 'secureTextEntry'
+      | 'onFocus'
+      | 'onBlur'
+      | 'selectionColor'
+      | 'cursorColor'
+      | 'style'
+      | 'autoCapitalize'
+      | 'autoCorrect'
+    >
+>(({ label, secureTextEntry: defaultSecureTextEntry, ...props }, ref) => {
   const [secureTextEntry, setSecureTextEntry] = useState(defaultSecureTextEntry);
   const colorAnimation = useSharedValue(0);
 
@@ -26,15 +40,16 @@ const AuthorityField = ({ label, secureTextEntry: defaultSecureTextEntry }: Prop
       <Animated.Text style={[styles.label, animatedTextStyle]}>{label}</Animated.Text>
       <Animated.View style={[styles.inputContainer, animatedInputBorderStyle]}>
         <TextInput
+          ref={ref}
           onFocus={() => (colorAnimation.value = withTiming(1, { duration: StyleVars.animationDuration }))}
           onBlur={() => (colorAnimation.value = withTiming(0, { duration: StyleVars.animationDuration }))}
           selectionColor={StyleVars.accent}
           cursorColor={StyleVars.accent}
           style={styles.input}
           secureTextEntry={secureTextEntry}
-          returnKeyType="next"
-          autoCapitalize={'none'}
+          autoCapitalize="none"
           autoCorrect={false}
+          {...props}
         />
         {defaultSecureTextEntry && (
           <TouchableOpacity style={styles.exposePasswordButton} onPress={() => setSecureTextEntry((prev) => !prev)}>
@@ -44,7 +59,7 @@ const AuthorityField = ({ label, secureTextEntry: defaultSecureTextEntry }: Prop
       </Animated.View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

@@ -1,9 +1,10 @@
+import Button from '@/components/Button';
+import StyleVars from '@/styles/styleVars';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ReactNode } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated';
+import { Image, Keyboard, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Button from '../components/Button';
-import StyleVars from '../styles/styleVars';
 
 interface Props {
   title: string;
@@ -11,32 +12,60 @@ interface Props {
   children: ReactNode;
   actionTitle: string;
   question: string;
-  alternateActionTitle: string;
+  alternateAuthTitle: string;
+  alternateAuthScreen: string;
   error: string | null;
+  loading: boolean;
   onSubmit(): void;
 }
 
-const Authority = ({ title, caption, children: fields, actionTitle, question, alternateActionTitle, error, onSubmit }: Props) => {
+const Authority = ({
+  title,
+  caption,
+  children: fields,
+  actionTitle,
+  question,
+  alternateAuthTitle,
+  alternateAuthScreen,
+  error,
+  loading,
+  onSubmit,
+}: Props) => {
+  const navigation = useNavigation<NavigationProp<any, any>>();
+
+  const handleActionPress = () => {
+    Keyboard.dismiss();
+    onSubmit();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <Image style={styles.icon} source={require('../assets/icon.png')} />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.caption}>{caption}</Text>
-      <View style={styles.fieldsContainer}>{fields}</View>
-      <Button onPress={onSubmit} containerStyle={styles.buttonContainer} style={styles.button} titleStyle={styles.buttonTitleStyle}>
-        {actionTitle}
-      </Button>
-      <View style={styles.alternativeActionContainer}>
-        <Text style={styles.question}>{question}</Text>
-        <TouchableOpacity>
-          <Text style={styles.alternateActionTitle}>{alternateActionTitle}</Text>
-        </TouchableOpacity>
-      </View>
-      {!!error && (
-        <Animated.Text entering={FadeInDown.duration(200)} exiting={FadeOut.duration(200)} style={styles.error}>
-          {error}
-        </Animated.Text>
-      )}
+      <KeyboardAvoidingView behavior="position">
+        <Image style={styles.icon} source={require('../assets/icon.png')} />
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.caption}>{caption}</Text>
+        <View style={styles.fieldsContainer}>{fields}</View>
+        <Button
+          onPress={handleActionPress}
+          containerStyle={styles.buttonContainer}
+          style={styles.button}
+          titleStyle={styles.buttonTitleStyle}
+          loading={loading}
+        >
+          {actionTitle}
+        </Button>
+        <View style={styles.alternativeActionContainer}>
+          <Text style={styles.question}>{question}</Text>
+          <TouchableOpacity onPress={() => navigation.navigate(alternateAuthScreen)}>
+            <Text style={styles.alternateActionTitle}>{alternateAuthTitle}</Text>
+          </TouchableOpacity>
+        </View>
+        {!!error && (
+          <Animated.Text entering={FadeIn.duration(200)} exiting={FadeOut.duration(200)} style={styles.error}>
+            {error}
+          </Animated.Text>
+        )}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -45,8 +74,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 70,
-    // backgroundColor: StyleVars.bgDark,
-    paddingHorizontal: StyleVars.screenHorizontalPadding,
+    paddingHorizontal: StyleVars.screenPadding,
   },
   icon: {
     marginLeft: 'auto',

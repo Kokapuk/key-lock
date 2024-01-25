@@ -11,7 +11,8 @@ const SignUp = () => {
       caption="Sign up now to get started with an account."
       actionTitle="Sign Up"
       question="Already have an account?"
-      alternateActionTitle="Sign In"
+      alternateAuthTitle="Sign In"
+      alternateAuthScreen="Sign In"
       error={error}
       onSubmit={() => {}}
     >

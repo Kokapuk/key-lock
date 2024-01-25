@@ -1,4 +1,4 @@
-// import useAuthStore from '@/store/auth';
+import useAuthStore from '@/store/auth';
 import { Password, PasswordDTO } from './types';
 
 const tokenExpirationTime = 3540000;
@@ -19,7 +19,7 @@ const request = async (
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        // Authorization: useAuthStore.getState().token ?? '',
+        Authorization: useAuthStore.getState().token ?? '',
       },
     }
   );
@@ -31,15 +31,15 @@ const request = async (
   if (!response.ok) {
     const data = await response.json();
 
-    console.error(data.message);
+    console.log(data.message);
     throw new Error(data.message);
   }
 
   return response;
 };
 
-export const saveToken = (token: string | null) => {
-  // useAuthStore.setState({ token });
+const saveToken = (token: string | null) => {
+  useAuthStore.setState({ token });
 
   if (!token) {
     return;
@@ -47,36 +47,36 @@ export const saveToken = (token: string | null) => {
 
   tokenExpirationTimeout && clearTimeout(tokenExpirationTimeout);
   tokenExpirationTimeout = setTimeout(() => {
-    // useAuthStore.setState({ token: null });
+    useAuthStore.setState({ token: null });
   }, tokenExpirationTime);
 };
 
-export const auth = async (login: string, password: string, authType: 'signIn' | 'signUp') => {
+const auth = async (login: string, password: string, authType: 'signIn' | 'signUp') => {
   try {
     const response = await request(authType === 'signUp' ? '/auth/signUp' : '/auth/signIn', {
       method: 'POST',
       body: { login, password },
     });
-    const data = await response.json()
+    const data = await response.json();
     saveToken(data.token);
   } catch (err) {
-    console.error(err);
+    console.log(err);
     throw err;
   }
 };
 
-export const create = async (name: string, website: string): Promise<Password> => {
+const create = async (name: string, website: string): Promise<Password> => {
   try {
     const response = await request('/passwords', { method: 'POST', body: { name, website } });
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error(err);
+    console.log(err);
     throw err;
   }
 };
 
-export const findAll = async (
+const findAll = async (
   query: string,
   limit: number,
   page: number
@@ -91,26 +91,23 @@ export const findAll = async (
     const totalCount = await response.headers.get('x-total-count');
     return [Number(totalCount), data];
   } catch (err) {
-    console.error(err);
+    console.log(err);
     throw err;
   }
 };
 
-export const findOne = async (id: string): Promise<Password> => {
+const findOne = async (id: string): Promise<Password> => {
   try {
-    const response = await request(
-      `/passwords/${id}`,
-      { method: 'GET' },
-    );
+    const response = await request(`/passwords/${id}`, { method: 'GET' });
     const data = await response.json();
     return data;
   } catch (err) {
-    console.error(err);
+    console.log(err);
     throw err;
   }
 };
 
-export const update = async (id: string, updatedObject: PasswordDTO): Promise<void> => {
+const update = async (id: string, updatedObject: PasswordDTO): Promise<void> => {
   try {
     await request(`/passwords/${id}`, {
       method: 'PUT',
@@ -123,16 +120,19 @@ export const update = async (id: string, updatedObject: PasswordDTO): Promise<vo
       },
     });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     throw err;
   }
 };
 
-export const remove = async (id: string): Promise<void> => {
+const remove = async (id: string): Promise<void> => {
   try {
     await request(`/passwords/${id}`, { method: 'DELETE' });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     throw err;
   }
 };
+
+const Api = { saveToken, auth, create, findAll, findOne, update, remove };
+export default Api;

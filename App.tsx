@@ -1,29 +1,36 @@
-import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { DarkTheme, NavigationContainer } from '@react-navigation/native';
+import { TransitionSpecs, createStackNavigator } from '@react-navigation/stack';
+import * as NavigationBar from 'expo-navigation-bar';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
+import { Dimensions } from 'react-native';
+import 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Header from './components/Header';
+import SearchHeader from './components/SearchHeader';
+import Editor from './screens/Editor';
 import Home from './screens/Home';
 import SignIn from './screens/SignIn';
-import StyleVars from './styles/styleVars';
 import SignUp from './screens/SignUp';
-import * as SystemUI from 'expo-system-ui';
+import useAuthStore from './store/auth';
+import TransitionPresets from './styles/TransitionPresets';
+import StyleVars from './styles/styleVars';
+import EditorHeader from './components/EditorHeader';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 const theme = {
-  ...DefaultTheme,
-  dark: true,
+  ...DarkTheme,
   colors: {
-    ...DefaultTheme.colors,
-    background: 'transparent'
+    ...DarkTheme.colors,
+    background: StyleVars.bgDark,
   },
 };
 
 const App = () => {
+  const isSignedIn = useAuthStore((state) => !!state.token);
+
   useEffect(() => {
-    SystemUI.setBackgroundColorAsync(StyleVars.bgDark);
+    NavigationBar.setBackgroundColorAsync(StyleVars.bgDark);
   }, []);
 
   return (
@@ -33,15 +40,42 @@ const App = () => {
         <NavigationContainer theme={theme}>
           <Stack.Navigator
             screenOptions={{
-              headerStyle: { backgroundColor: StyleVars.bgDark },
               headerShadowVisible: false,
-              navigationBarColor: StyleVars.bgDark,
-              animationDuration: StyleVars.animationDuration,
+              transitionSpec: {
+                open: TransitionSpecs.TransitionIOSSpec,
+                close: TransitionSpecs.TransitionIOSSpec,
+              },
+              headerMode: 'screen',
             }}
           >
-            <Stack.Screen name="Sign In" component={SignIn} options={{ headerShown: false }} />
-            <Stack.Screen name="Sign Up" component={SignUp} options={{ headerShown: false, animation: 'fade' }} />
-            <Stack.Screen name="Home" component={Home} options={{ header: () => <Header /> }} />
+            {isSignedIn ? (
+              <>
+                <Stack.Screen name="Home" component={Home} options={{ header: () => <SearchHeader /> }} />
+                <Stack.Screen
+                  name="Editor"
+                  component={Editor}
+                  options={{
+                    header: () => <EditorHeader />,
+                    cardStyleInterpolator: TransitionPresets.forHorizontalIOS,
+                    gestureEnabled: true,
+                    gestureDirection: 'horizontal',
+                    gestureResponseDistance: Dimensions.get('window').width,
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <Stack.Screen name="Sign In" component={SignIn} options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="Sign Up"
+                  component={SignUp}
+                  options={{
+                    headerShown: false,
+                    cardStyleInterpolator: TransitionPresets.forFade,
+                  }}
+                />
+              </>
+            )}
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>

@@ -4,9 +4,10 @@ const StyleVars = {
   bgLight: '#404040',
   accent: '#175ddc',
   danger: '#e84a5f',
+  placeholder: 'rgba(255, 255, 255, 0.25)',
   borderRadius: 5,
   borderRadiusLarge: 10,
-  screenHorizontalPadding: 15,
+  screenPadding: 15,
   animationDuration: 200,
 };
 

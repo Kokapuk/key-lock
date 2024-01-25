@@ -1,7 +1,6 @@
-import React from 'react';
+import StyleVars from '@/styles/styleVars';
+import { Password as PasswordType } from '@/utils/types';
 import { Image, Pressable, PressableProps, StyleSheet, Text, View } from 'react-native';
-import StyleVars from '../styles/styleVars';
-import { Password as PasswordType } from '../utils/types';
 
 interface Props {
   password: PasswordType;
@@ -40,6 +39,7 @@ const styles = StyleSheet.create({
   image: {
     height: 40,
     width: 40,
+    borderRadius: StyleVars.borderRadius
   },
   details: {
     gap: 2,

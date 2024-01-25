@@ -1,8 +1,7 @@
-import React from 'react';
-import { StyleProp, StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
+import StyleVars from '@/styles/styleVars';
+import { StyleProp, StyleSheet, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Button from './Button';
-import StyleVars from '../styles/styleVars';
 
 interface Props {
   style?: StyleProp<ViewStyle>;
@@ -18,7 +17,7 @@ const Input = ({
       <TextInput
         {...props}
         style={styles.input}
-        placeholderTextColor="rgba(255, 255, 255, 0.25)"
+        placeholderTextColor={StyleVars.placeholder}
         selectionColor={StyleVars.accent}
         cursorColor={StyleVars.accent}
       />
@@ -45,7 +44,7 @@ const styles = StyleSheet.create({
   icon: {
     height: '100%',
     fontSize: 20,
-    color: 'rgba(255, 255, 255, 0.25)',
+    color: StyleVars.placeholder,
     textAlign: 'center',
     textAlignVertical: 'center',
   },

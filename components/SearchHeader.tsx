@@ -1,13 +1,12 @@
-import React from 'react';
+import StyleVars from '@/styles/styleVars';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Button from './Button';
 import Input from './Input';
-import StyleVars from '../styles/styleVars';
 
-const Header = () => {
+const SearchHeader = () => {
   return (
-    <SafeAreaView style={styles.header} edges={['top']}>
+    <SafeAreaView style={styles.header} edges={['top', 'right', 'left']}>
       <View style={styles.container}>
         <Input style={styles.searchBox} placeholder="Search vault" returnKeyType="search" />
         <Button style={styles.addButton} iconName="add" />
@@ -18,9 +17,8 @@ const Header = () => {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: StyleVars.bgDark,
-    paddingTop: 15,
-    paddingHorizontal: StyleVars.screenHorizontalPadding,
+    paddingTop: StyleVars.screenPadding,
+    paddingHorizontal: StyleVars.screenPadding,
   },
   container: {
     height: 35,
@@ -38,4 +36,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Header;
+export default SearchHeader;

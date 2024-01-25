@@ -1,19 +1,41 @@
-import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import PasswordList from '@/components/PasswordList';
+import useAuthStore from '@/store/auth';
+import useEditorStore from '@/store/editor';
+import usePasswordsStore from '@/store/passwords';
+import StyleVars from '@/styles/styleVars';
+import { Password } from '@/utils/types';
+import { NavigationProp } from '@react-navigation/native';
+import { useEffect } from 'react';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Password from '../components/Password';
-import StyleVars from '../styles/styleVars';
 
-const Home = () => {
+interface Props {
+  navigation: NavigationProp<any, any>;
+}
+
+const Home = ({ navigation }: Props) => {
+  const setSelectedPassword = useEditorStore((state) => state.setSelectedPassword);
+  const { passwords, isFetching, fetch: fetchPasswords, paginate: paginatePasswords } = usePasswordsStore();
+  const token = useAuthStore((state) => state.token);
+
+  useEffect(() => {
+    if (token) {
+      fetchPasswords(undefined, true);
+    }
+  }, [fetchPasswords, token]);
+
+  const handlePasswordPress = (password: Password) => {
+    setSelectedPassword(password);
+    navigation.navigate('Editor');
+  };
+
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <FlatList
-        data={Array(20).fill(0)}
-        renderItem={() => (
-          <Password password={{ _id: '0', credentials: { fields: [] }, name: 'Discord', website: 'discord.com' }} />
-        )}
-        keyExtractor={(_, index) => index.toString()}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
+    <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
+      <PasswordList
+        passwords={passwords}
+        paginating={isFetching}
+        onPasswordPress={handlePasswordPress}
+        onEndReached={paginatePasswords}
       />
     </SafeAreaView>
   );
@@ -23,11 +45,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: StyleVars.bgDark,
-    paddingHorizontal: StyleVars.screenHorizontalPadding,
-    paddingVertical: 20,
-  },
-  separator: {
-    height: 10,
+    paddingHorizontal: StyleVars.screenPadding,
+    paddingTop: 20,
   },
 });
 
