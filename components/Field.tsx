@@ -7,6 +7,7 @@ import * as Clipboard from 'expo-clipboard';
 import React from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import * as Linking from 'expo-linking';
 
 interface Props {
   field: FieldType;
@@ -125,7 +126,7 @@ const Field = ({ field, isWebsite }: Props) => {
           </TouchableOpacity>
         )}
       {isWebsite && field.value && (
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => Linking.openURL(`http://${field.value}`)}>
           <Icon style={styles.buttonIcon} name="open-outline" />
         </TouchableOpacity>
       )}

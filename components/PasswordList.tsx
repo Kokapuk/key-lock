@@ -24,7 +24,7 @@ const PasswordList = ({
       data={passwords}
       renderItem={(info) => <Password onPress={() => onPasswordPress(info.item)} password={info.item} />}
       keyExtractor={(_, index) => index.toString()}
-      onEndReachedThreshold={0.5}
+      onEndReachedThreshold={1}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
       ListFooterComponent={
         paginating

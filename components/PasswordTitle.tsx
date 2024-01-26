@@ -3,9 +3,9 @@ import StyleVars from '@/styles/styleVars';
 import { Image, StyleSheet, TextInput, View } from 'react-native';
 
 const PasswordTitle = () => {
-  const { isEditing, draftPassword, setDraftPassword } = useEditorStore();
+  const { isEditing, selectedPassword, draftPassword, setDraftPassword } = useEditorStore();
 
-  if (!draftPassword) {
+  if (!selectedPassword || !draftPassword) {
     return null;
   }
 
@@ -13,7 +13,7 @@ const PasswordTitle = () => {
     <View style={styles.container}>
       <Image
         style={styles.image}
-        source={{ uri: `https://www.google.com/s2/favicons?domain=${draftPassword.website}&sz=128` }}
+        source={{ uri: `https://www.google.com/s2/favicons?domain=${selectedPassword.website}&sz=128` }}
       />
       <TextInput
         style={styles.input}

@@ -1,10 +1,10 @@
+import 'react-native-gesture-handler';
 import { DarkTheme, NavigationContainer } from '@react-navigation/native';
 import { TransitionSpecs, createStackNavigator } from '@react-navigation/stack';
 import * as NavigationBar from 'expo-navigation-bar';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { Dimensions } from 'react-native';
-import 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SearchHeader from './components/SearchHeader';
 import Editor from './screens/Editor';
