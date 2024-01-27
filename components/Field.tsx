@@ -4,10 +4,13 @@ import generateRandomString from '@/utils/generateRandomString';
 import simplifyUrl from '@/utils/simplifyUrl';
 import { Field as FieldType, Password } from '@/utils/types';
 import * as Clipboard from 'expo-clipboard';
+import * as Linking from 'expo-linking';
 import React from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Animated, { Easing, FadeIn, FadeOut } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
-import * as Linking from 'expo-linking';
+
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 interface Props {
   field: FieldType;
@@ -111,24 +114,44 @@ const Field = ({ field, isWebsite }: Props) => {
       </View>
       {!isWebsite && isEditing && (
         <>
-          <TouchableOpacity style={styles.button} onPress={handleRemove}>
+          <AnimatedTouchableOpacity
+            style={styles.button}
+            onPress={handleRemove}
+            entering={FadeIn.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
+            exiting={FadeOut.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
+          >
             <Icon style={styles.buttonIcon} name="trash" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => handleChange(generateRandomString())}>
+          </AnimatedTouchableOpacity>
+          <AnimatedTouchableOpacity
+            style={styles.button}
+            onPress={() => handleChange(generateRandomString())}
+            entering={FadeIn.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
+            exiting={FadeOut.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
+          >
             <Icon style={styles.buttonIcon} name="key" />
-          </TouchableOpacity>
+          </AnimatedTouchableOpacity>
         </>
       )}
       {!isWebsite &&
         (isEditing || selectedPassword?.credentials.fields?.find((item) => item._id === field._id)?.isPassword) && (
-          <TouchableOpacity style={styles.button} onPress={toggleExposed}>
+          <AnimatedTouchableOpacity
+            style={styles.button}
+            onPress={toggleExposed}
+            entering={FadeIn.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
+            exiting={FadeOut.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
+          >
             <Icon style={styles.buttonIcon} name={field.isPassword ? 'eye' : 'eye-off'} />
-          </TouchableOpacity>
+          </AnimatedTouchableOpacity>
         )}
       {isWebsite && field.value && (
-        <TouchableOpacity style={styles.button} onPress={() => Linking.openURL(`http://${field.value}`)}>
+        <AnimatedTouchableOpacity
+          style={styles.button}
+          onPress={() => Linking.openURL(`http://${field.value}`)}
+          entering={FadeIn.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
+          exiting={FadeOut.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
+        >
           <Icon style={styles.buttonIcon} name="open-outline" />
-        </TouchableOpacity>
+        </AnimatedTouchableOpacity>
       )}
       <TouchableOpacity style={styles.button} onPress={() => Clipboard.setStringAsync(field.value)}>
         <Icon style={styles.buttonIcon} name="copy" />
@@ -140,7 +163,6 @@ const Field = ({ field, isWebsite }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    gap: 0,
     alignItems: 'center',
     paddingHorizontal: 15,
   },
@@ -159,7 +181,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   button: {
-    padding: 10
+    padding: 10,
   },
   buttonIcon: {
     fontSize: 17,

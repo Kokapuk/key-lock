@@ -11,7 +11,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import Animated, { Easing, FadeIn, FadeOut, Layout } from 'react-native-reanimated';
+import Animated, { Easing, FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const AnimatedActivityIndicator = Animated.createAnimatedComponent(ActivityIndicator);
@@ -36,7 +36,7 @@ const Button = ({
   loading,
   ...props
 }: Props & Omit<PressableProps, 'children' | 'style'>) => {
-  const layoutAnimation = useMemo(() => Layout.duration(StyleVars.animationDuration).easing(Easing.ease), []);
+  const layoutAnimation = useMemo(() => LinearTransition.duration(StyleVars.animationDuration).easing(Easing.ease), []);
 
   return (
     <View style={[styles.container, containerStyle]}>

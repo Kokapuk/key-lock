@@ -2,6 +2,7 @@ import useEditorStore from '@/store/editor';
 import StyleVars from '@/styles/styleVars';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { StyleSheet, TouchableOpacity } from 'react-native';
+import Animated, { Easing, FadeIn, FadeOut, LayoutAnimationConfig } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Button from './Button';
@@ -22,45 +23,63 @@ const EditorHeader = () => {
 
   return (
     <SafeAreaView style={styles.header} edges={['top', 'right', 'left']}>
-      {isEditing ? (
-        <>
-          <TouchableOpacity style={[styles.iconButton, styles.separatedButton]} onPress={handleCancel}>
-            <Icon style={styles.iconButtonIcon} name="close" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <Icon style={styles.iconButtonIcon} name="checkmark" onPress={savePassword} />
-          </TouchableOpacity>
-        </>
-      ) : (
-        <>
-          <TouchableOpacity style={[styles.iconButton, styles.separatedButton]} onPress={() => navigation.goBack()}>
-            <Icon style={styles.iconButtonIcon} name="arrow-back" />
-          </TouchableOpacity>
-          <Button style={styles.button} iconStyle={styles.buttonIcon} iconName="trash">
-            Delete
-          </Button>
-          <Button
-            style={styles.button}
-            iconStyle={styles.buttonIcon}
-            iconName="pencil"
-            onPress={() => setEditing(true)}
+      <LayoutAnimationConfig skipEntering>
+        {isEditing ? (
+          <Animated.View
+            key="editing"
+            style={styles.container}
+            entering={FadeIn.delay(StyleVars.animationDuration)
+              .duration(StyleVars.animationDuration)
+              .easing(Easing.inOut(Easing.ease))}
+            exiting={FadeOut.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
           >
-            Edit
-          </Button>
-        </>
-      )}
+            <TouchableOpacity style={[styles.iconButton, styles.separatedButton]} onPress={handleCancel}>
+              <Icon style={styles.iconButtonIcon} name="close" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton}>
+              <Icon style={styles.iconButtonIcon} name="checkmark" onPress={savePassword} />
+            </TouchableOpacity>
+          </Animated.View>
+        ) : (
+          <Animated.View
+            key="viewing"
+            style={styles.container}
+            entering={FadeIn.delay(StyleVars.animationDuration)
+              .duration(StyleVars.animationDuration)
+              .easing(Easing.inOut(Easing.ease))}
+            exiting={FadeOut.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
+          >
+            <TouchableOpacity style={[styles.iconButton, styles.separatedButton]} onPress={() => navigation.goBack()}>
+              <Icon style={styles.iconButtonIcon} name="arrow-back" />
+            </TouchableOpacity>
+            <Button style={styles.button} iconStyle={styles.buttonIcon} iconName="trash">
+              Delete
+            </Button>
+            <Button
+              style={styles.button}
+              iconStyle={styles.buttonIcon}
+              iconName="pencil"
+              onPress={() => setEditing(true)}
+            >
+              Edit
+            </Button>
+          </Animated.View>
+        )}
+      </LayoutAnimationConfig>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
+    paddingTop: StyleVars.screenPadding,
+    paddingHorizontal: StyleVars.screenPadding,
+  },
+  container: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
     gap: 10,
-    paddingTop: StyleVars.screenPadding,
-    paddingHorizontal: StyleVars.screenPadding,
   },
   button: {
     paddingHorizontal: 7,
