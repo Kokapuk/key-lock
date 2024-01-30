@@ -6,7 +6,7 @@ const getLoginIssue = (string: string): string | null => {
     return `Login must be at least ${minLoginLength} characters`;
   }
 
-  if (!/^[a-zA-Z0-9_-]+$/.test(string)) {
+  if (!/^[a-zA-Z0-9_-]+$/.test(string.trim())) {
     return 'Login can contain only latin characters, numbers, underscore and dash';
   }
 

@@ -31,7 +31,7 @@ const Authority = ({
   loading,
   onSubmit,
 }: Props) => {
-  const navigation = useNavigation<NavigationProp<any, any>>();
+  const navigation = useNavigation<NavigationProp<any>>();
 
   const handleActionPress = () => {
     Keyboard.dismiss();
@@ -61,7 +61,11 @@ const Authority = ({
           </TouchableOpacity>
         </View>
         {!!error && (
-          <Animated.Text entering={FadeIn.duration(200)} exiting={FadeOut.duration(200)} style={styles.error}>
+          <Animated.Text
+            entering={FadeIn.duration(StyleVars.animationDuration)}
+            exiting={FadeOut.duration(StyleVars.animationDuration)}
+            style={styles.error}
+          >
             {error}
           </Animated.Text>
         )}

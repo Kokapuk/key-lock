@@ -5,15 +5,17 @@ import Button from './Button';
 
 interface Props {
   style?: StyleProp<ViewStyle>;
+  iconName?: string;
 }
 
 const Input = ({
   style,
+  iconName,
   ...props
 }: Props & Omit<TextInputProps, 'style' | 'placeholderTextColor' | 'selectionColor'>) => {
   return (
     <View style={[styles.container, style]}>
-      <Icon style={styles.icon} name="search" />
+      {iconName && <Icon style={styles.icon} name={iconName} />}
       <TextInput
         {...props}
         style={styles.input}
@@ -21,12 +23,14 @@ const Input = ({
         selectionColor={StyleVars.accent}
         cursorColor={StyleVars.accent}
       />
-      <Button
-        style={styles.clearButton}
-        containerStyle={styles.clearButtonContainer}
-        iconStyle={styles.clearIcon}
-        iconName="close"
-      />
+      {props.returnKeyType === 'search' && (
+        <Button
+          style={styles.clearButton}
+          containerStyle={styles.clearButtonContainer}
+          iconStyle={styles.clearIcon}
+          iconName="close"
+        />
+      )}
     </View>
   );
 };

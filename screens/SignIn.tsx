@@ -24,7 +24,7 @@ const SignIn = () => {
     setLoading(true);
 
     try {
-      await Api.auth(login, password, 'signIn');
+      await Api.auth(login.trim(), password, 'signIn');
       // localStorage.setItem('login', login);
     } catch (err) {
       if (err instanceof Error) {

@@ -19,8 +19,8 @@ const PasswordSkeleton = () => {
       withDelay(
         800,
         withSequence(
-          withTiming(0.25, { duration: 200, easing: Easing.out(Easing.ease) }),
-          withTiming(0.1, { duration: 200, easing: Easing.in(Easing.ease) })
+          withTiming(0.25, { duration: StyleVars.animationDuration, easing: Easing.out(Easing.ease) }),
+          withTiming(0.1, { duration: StyleVars.animationDuration, easing: Easing.in(Easing.ease) })
         )
       ),
       -1

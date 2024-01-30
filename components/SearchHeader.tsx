@@ -8,7 +8,7 @@ const SearchHeader = () => {
   return (
     <SafeAreaView style={styles.header} edges={['top', 'right', 'left']}>
       <View style={styles.container}>
-        <Input style={styles.searchBox} placeholder="Search vault" returnKeyType="search" />
+        <Input style={styles.searchBox} placeholder="Search vault" returnKeyType="search" iconName="search" />
         <Button style={styles.addButton} iconName="add" />
       </View>
     </SafeAreaView>

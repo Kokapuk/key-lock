@@ -2,7 +2,7 @@ import useEditorStore from '@/store/editor';
 import StyleVars from '@/styles/styleVars';
 import { Field as FieldType } from '@/utils/types';
 import React, { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Animated, { CurvedTransition, Easing, FadeIn, FadeOut, LayoutAnimationConfig } from 'react-native-reanimated';
 import Field from './Field';
@@ -28,7 +28,7 @@ const Credentials = () => {
 
   return (
     <LayoutAnimationConfig skipEntering>
-      <ScrollView>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.container}>
         {[...(draftPassword.credentials.fields ?? []), websiteField].map((item, index) => (
           <Animated.View
             key={item._id}
@@ -36,7 +36,6 @@ const Credentials = () => {
             exiting={fieldAnimation.exiting}
             layout={fieldAnimation.layout}
           >
-            <View style={styles.separator} />
             <Field field={item} isWebsite={index === draftPassword.credentials.fields?.length} />
           </Animated.View>
         ))}
@@ -46,8 +45,12 @@ const Credentials = () => {
 };
 
 const styles = StyleSheet.create({
-  separator: {
-    height: 40,
+  scrollView: {
+    marginBottom: 15,
+  },
+  container: {
+    flexGrow: 1,
+    gap: 40,
   },
 });
 

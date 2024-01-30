@@ -1,6 +1,10 @@
 import useEditorStore from '@/store/editor';
 import StyleVars from '@/styles/styleVars';
 import { Image, StyleSheet, TextInput, View } from 'react-native';
+import Animated, { Easing, LinearTransition } from 'react-native-reanimated';
+import AddFieldModal from './AddFieldModal';
+
+const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 const PasswordTitle = () => {
   const { isEditing, selectedPassword, draftPassword, setDraftPassword } = useEditorStore();
@@ -15,7 +19,7 @@ const PasswordTitle = () => {
         style={styles.image}
         source={{ uri: `https://www.google.com/s2/favicons?domain=${selectedPassword.website}&sz=128` }}
       />
-      <TextInput
+      <AnimatedTextInput
         style={styles.input}
         value={draftPassword.name}
         placeholderTextColor={StyleVars.placeholder}
@@ -23,7 +27,9 @@ const PasswordTitle = () => {
         placeholder="Title"
         editable={isEditing}
         selectionColor={StyleVars.accent}
+        layout={LinearTransition.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
       />
+      {isEditing && <AddFieldModal />}
     </View>
   );
 };

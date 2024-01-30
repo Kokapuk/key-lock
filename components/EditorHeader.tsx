@@ -1,16 +1,18 @@
 import useEditorStore from '@/store/editor';
 import StyleVars from '@/styles/styleVars';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { Keyboard, StyleSheet } from 'react-native';
 import Animated, { Easing, FadeIn, FadeOut, LayoutAnimationConfig } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Ionicons';
 import Button from './Button';
+import IconButton from './IconButton';
+import DeletePasswordModal from './DeletePasswordModal';
 
 const EditorHeader = () => {
-  const navigation = useNavigation<NavigationProp<any, any>>();
+  const navigation = useNavigation<NavigationProp<any>>();
 
-  const { selectedPassword, isEditing, draftPassword, setEditing, setDraftPassword, savePassword } = useEditorStore();
+  const { selectedPassword, isEditing, draftPassword, setEditing, setDraftPassword, savePassword, isLoading } =
+    useEditorStore();
 
   if (!selectedPassword || !draftPassword) {
     return null;
@@ -19,6 +21,11 @@ const EditorHeader = () => {
   const handleCancel = () => {
     setDraftPassword(JSON.parse(JSON.stringify(selectedPassword)));
     setEditing(false);
+  };
+
+  const handleSavePassword = () => {
+    Keyboard.dismiss();
+    savePassword();
   };
 
   return (
@@ -33,12 +40,20 @@ const EditorHeader = () => {
               .easing(Easing.inOut(Easing.ease))}
             exiting={FadeOut.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
           >
-            <TouchableOpacity style={[styles.iconButton, styles.separatedButton]} onPress={handleCancel}>
-              <Icon style={styles.iconButtonIcon} name="close" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
-              <Icon style={styles.iconButtonIcon} name="checkmark" onPress={savePassword} />
-            </TouchableOpacity>
+            <IconButton
+              disabled={isLoading}
+              style={[styles.iconButton, styles.separatedButton]}
+              onPress={handleCancel}
+              iconName="close"
+              iconStyle={styles.iconButtonIcon}
+            />
+            <IconButton
+              style={styles.iconButton}
+              iconStyle={styles.iconButtonIcon}
+              iconName="checkmark"
+              onPress={handleSavePassword}
+              loading={isLoading}
+            />
           </Animated.View>
         ) : (
           <Animated.View
@@ -49,13 +64,16 @@ const EditorHeader = () => {
               .easing(Easing.inOut(Easing.ease))}
             exiting={FadeOut.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
           >
-            <TouchableOpacity style={[styles.iconButton, styles.separatedButton]} onPress={() => navigation.goBack()}>
-              <Icon style={styles.iconButtonIcon} name="arrow-back" />
-            </TouchableOpacity>
-            <Button style={styles.button} iconStyle={styles.buttonIcon} iconName="trash">
-              Delete
-            </Button>
+            <IconButton
+              disabled={isLoading}
+              style={[styles.iconButton, styles.separatedButton]}
+              onPress={() => navigation.goBack()}
+              iconName="arrow-back"
+              iconStyle={styles.iconButtonIcon}
+            />
+            <DeletePasswordModal triggerIconStyle={styles.buttonIcon} triggerStyle={styles.button} />
             <Button
+              disabled={isLoading}
               style={styles.button}
               iconStyle={styles.buttonIcon}
               iconName="pencil"

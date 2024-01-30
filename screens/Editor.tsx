@@ -2,7 +2,7 @@ import Credentials from '@/components/Credentials';
 import PasswordTitle from '@/components/PasswordTitle';
 import useEditorStore from '@/store/editor';
 import StyleVars from '@/styles/styleVars';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Editor = () => {
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: StyleVars.screenPadding,
     paddingTop: 25,
-    flex: 1
+    flex: 1,
   },
   separator: {
     marginVertical: 25,

@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 14,
+    lineHeight: 17,
     height: 17,
     color: 'white',
   },

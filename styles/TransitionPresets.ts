@@ -11,12 +11,12 @@ const forFade: StackCardStyleInterpolator = ({ current }) => ({
   },
 });
 
-export function forHorizontalIOS({
+const forHorizontalIOS = ({
   current,
   next,
   inverted,
   layouts: { screen },
-}: StackCardInterpolationProps): StackCardInterpolatedStyle {
+}: StackCardInterpolationProps): StackCardInterpolatedStyle => {
   const translateFocused = Animated.multiply(
     current.progress.interpolate({
       inputRange: [0, 1],

@@ -1,6 +1,6 @@
 import StyleVars from '@/styles/styleVars';
 import { forwardRef, useState } from 'react';
-import { StyleSheet, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
 
