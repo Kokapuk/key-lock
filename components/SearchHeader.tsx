@@ -1,15 +1,18 @@
+import CreatePasswordModal from '@/components/CreatePasswordModal';
+import usePasswordsStore from '@/store/passwords';
 import StyleVars from '@/styles/styleVars';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Button from './Button';
-import Input from './Input';
+import Search from './Search';
 
 const SearchHeader = () => {
+  const { totalCount, fetch: fetchPasswords } = usePasswordsStore();
+
   return (
     <SafeAreaView style={styles.header} edges={['top', 'right', 'left']}>
       <View style={styles.container}>
-        <Input style={styles.searchBox} placeholder="Search vault" returnKeyType="search" iconName="search" />
-        <Button style={styles.addButton} iconName="add" />
+        <Search totalCount={totalCount} onQueryUpdate={fetchPasswords} inputStyle={styles.input} />
+        <CreatePasswordModal triggerStyle={styles.addButton} />
       </View>
     </SafeAreaView>
   );
@@ -25,8 +28,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
   },
-  searchBox: {
-    height: '100%',
+  input: {
     flex: 1,
   },
   addButton: {

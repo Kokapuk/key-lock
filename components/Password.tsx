@@ -2,6 +2,9 @@ import StyleVars from '@/styles/styleVars';
 import { Password as PasswordType } from '@/utils/types';
 import { useMemo } from 'react';
 import { Image, Pressable, PressableProps, StyleSheet, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
+
+const AnimatedImage = Animated.createAnimatedComponent(Image);
 
 interface Props {
   password: PasswordType;
@@ -11,20 +14,20 @@ interface Props {
 const Password = ({ password, ...props }: Props) => {
   const firstFieldValue = useMemo(
     () => password.credentials.fields?.find((item) => !item.isPassword)?.value,
-    [password.credentials.fields]
+    [password.credentials.fields],
   );
   const caption = useMemo(
     () =>
       firstFieldValue
         ? firstFieldValue.substring(0, Math.floor(firstFieldValue.length / 2)) +
-          '*'.repeat(firstFieldValue.length - Math.floor(firstFieldValue.length / 2))
+        '*'.repeat(firstFieldValue.length - Math.floor(firstFieldValue.length / 2))
         : password.website,
-    [firstFieldValue, password.website]
+    [firstFieldValue, password.website],
   );
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.button} android_ripple={{ color: 'rgba(255, 255, 255, 0.2)' }} {...props}>
+      <Pressable {...props} style={styles.button} android_ripple={{ color: 'rgba(255, 255, 255, 0.2)' }} disabled={!props.onPress}>
         <Image
           style={styles.image}
           source={{ uri: `https://www.google.com/s2/favicons?domain=${password.website}&sz=128` }}

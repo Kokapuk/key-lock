@@ -30,7 +30,7 @@ const DeletePasswordModal = ({ triggerStyle, triggerIconStyle }: Props) => {
       setOpen(false);
 
       await Api.remove(draftPassword._id);
-      fetchPasswords(query);
+      await fetchPasswords(query);
 
       navigation.navigate('Home');
     } finally {

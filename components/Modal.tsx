@@ -1,14 +1,15 @@
-import { FadeInDown, FadeOutDown } from '@/styles/layoutAnimations';
 import StyleVars from '@/styles/styleVars';
 import { EventArg, NavigationProp, useNavigation } from '@react-navigation/native';
-import React, { ReactNode, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { ReactNode, useEffect, useMemo } from 'react';
+import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { Portal } from 'react-native-paper';
 import Animated, {
   Easing,
   FadeIn,
   FadeOut,
+  SlideInDown,
+  SlideOutDown,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -20,23 +21,17 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 interface Props {
   open: boolean;
-  onClose(): void;
+  onClose?(): void;
   title: string;
   children: ReactNode;
+  sheetStyle?: StyleProp<ViewStyle>;
+  sheetContentStyle?: StyleProp<ViewStyle>;
 }
 
-const Modal = ({ open, onClose, title, children }: Props) => {
+const Modal = ({ open, onClose, title, children, sheetStyle, sheetContentStyle }: Props) => {
   const navigation = useNavigation<NavigationProp<any>>();
   const offset = useSharedValue(0);
   const { bottom } = useSafeAreaInsets();
-  const [modalHeight, setModalHeight] = useState(0);
-  const [closingWithGesture, setClosingWithGesture] = useState(false);
-
-  useEffect(() => {
-    if (open) {
-      setClosingWithGesture(false);
-    }
-  }, [open]);
 
   useEffect(() => {
     if (!open) {
@@ -58,7 +53,7 @@ const Modal = ({ open, onClose, title, children }: Props) => {
       >
     ) => {
       event.preventDefault();
-      onClose();
+      onClose?.();
     };
 
     navigation.addListener('beforeRemove', handleRemove);
@@ -67,32 +62,28 @@ const Modal = ({ open, onClose, title, children }: Props) => {
   }, [open]);
 
   const handleClose = () => {
-    onClose();
+    onClose?.();
     offset.value = 0;
   };
 
-  const handleCloseGesture = () => {
-    setClosingWithGesture(true);
-    handleClose();
-  };
+  const closingGesture = useMemo(
+    () =>
+      Gesture.Pan()
+        .enabled(!!onClose)
+        .onChange((event) => {
+          const offsetDelta = event.changeY + offset.value;
+          offset.value = offsetDelta > 0 ? offsetDelta : 0;
+        })
+        .onFinalize((event) => {
+          if (offset.value < 75 && event.velocityY < 350) {
+            offset.value = withTiming(0, { duration: StyleVars.animationDuration, easing: Easing.inOut(Easing.ease) });
+            return;
+          }
 
-  const gesture = Gesture.Pan()
-    .onChange((event) => {
-      const offsetDelta = event.changeY + offset.value;
-      offset.value = offsetDelta > 0 ? offsetDelta : 0;
-    })
-    .onFinalize((event) => {
-      if (offset.value < 75 && event.velocityY < 350) {
-        offset.value = withTiming(0, { duration: StyleVars.animationDuration, easing: Easing.inOut(Easing.ease) });
-        return;
-      }
-
-      offset.value = withTiming(modalHeight, {
-        duration: StyleVars.animationDuration,
-        easing: Easing.out(Easing.ease),
-      });
-      runOnJS(handleCloseGesture)();
-    });
+          runOnJS(handleClose)();
+        }),
+    [onClose, offset.value]
+  );
 
   const animatedSheetStyle = useAnimatedStyle(() => ({ transform: [{ translateY: offset.value }] }));
 
@@ -102,23 +93,21 @@ const Modal = ({ open, onClose, title, children }: Props) => {
         <>
           <AnimatedPressable
             style={styles.background}
-            onPress={handleClose}
-            entering={FadeIn.duration(StyleVars.animationDuration).easing(Easing.out(Easing.ease))}
-            exiting={FadeOut.duration(StyleVars.animationDuration).easing(Easing.in(Easing.ease))}
+            onPress={!!onClose ? handleClose : undefined}
+            entering={FadeIn.duration(StyleVars.animationDurationLong).easing(Easing.out(Easing.ease))}
+            exiting={FadeOut.duration(StyleVars.animationDurationLong).easing(Easing.in(Easing.ease))}
           />
-          <GestureDetector gesture={gesture}>
+          <GestureDetector gesture={closingGesture}>
             <Animated.View
-              key={closingWithGesture ? 'gesture' : 'animation'}
-              onLayout={(e) => setModalHeight(e.nativeEvent.layout.height)}
-              style={[styles.sheet, { paddingBottom: bottom }, animatedSheetStyle]}
-              entering={FadeInDown}
-              exiting={closingWithGesture ? undefined : FadeOutDown}
+              style={[styles.sheet, { paddingBottom: bottom }, animatedSheetStyle, sheetStyle]}
+              entering={SlideInDown.duration(StyleVars.animationDurationLong).easing(Easing.out(Easing.ease))}
+              exiting={SlideOutDown.duration(StyleVars.animationDurationLong).easing(Easing.in(Easing.ease))}
             >
               <View style={styles.header}>
-                <View style={styles.handle} />
+                {!!onClose && <View style={styles.handle} />}
                 <Text style={styles.title}>{title}</Text>
               </View>
-              <View style={styles.contentContainer}>{children}</View>
+              <View style={[styles.contentContainer, sheetContentStyle]}>{children}</View>
             </Animated.View>
           </GestureDetector>
         </>
@@ -159,9 +148,10 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 14,
   },
   contentContainer: {
+    flex: 1,
     marginBottom: 15,
     marginHorizontal: 20,
   },

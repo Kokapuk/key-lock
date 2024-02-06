@@ -1,8 +1,9 @@
 import useEditorStore from '@/store/editor';
 import StyleVars from '@/styles/styleVars';
 import { Image, StyleSheet, TextInput, View } from 'react-native';
-import Animated, { Easing, LinearTransition } from 'react-native-reanimated';
+import Animated, { Easing, FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 import AddFieldModal from './AddFieldModal';
+import IntegrationModal from './IntegrationModal';
 
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
@@ -29,7 +30,16 @@ const PasswordTitle = () => {
         selectionColor={StyleVars.accent}
         layout={LinearTransition.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
       />
-      {isEditing && <AddFieldModal />}
+      {isEditing && (
+        <Animated.View
+          style={styles.buttons}
+          entering={FadeIn.duration(StyleVars.animationDuration).easing(Easing.out(Easing.ease))}
+          exiting={FadeOut.duration(StyleVars.animationDuration).easing(Easing.in(Easing.ease))}
+        >
+          <IntegrationModal triggerStyle={styles.button} triggerIconStyle={styles.buttonIcon} />
+          <AddFieldModal triggerStyle={styles.button} triggerIconStyle={styles.buttonIcon} />
+        </Animated.View>
+      )}
     </View>
   );
 };
@@ -50,6 +60,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     flex: 1,
+  },
+  buttons: {
+    flexDirection: 'row',
+    gap: 7,
+  },
+  button: {
+    padding: 5,
+  },
+  buttonIcon: {
+    fontSize: 22,
+    color: 'rgba(255, 255, 255, .5)',
   },
 });
 

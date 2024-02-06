@@ -1,7 +1,6 @@
 import useEditorStore from '@/store/editor';
 import StyleVars from '@/styles/styleVars';
 import generateRandomString from '@/utils/generateRandomString';
-import simplifyUrl from '@/utils/simplifyUrl';
 import { Field as FieldType, Password } from '@/utils/types';
 import * as Clipboard from 'expo-clipboard';
 import * as Linking from 'expo-linking';
@@ -49,20 +48,6 @@ const Field = ({ field, isWebsite }: Props) => {
     );
   };
 
-  const handleBlur = () => {
-    if (!isWebsite) {
-      return;
-    }
-
-    setDraftPassword(
-      (prev) =>
-        prev && {
-          ...prev,
-          website: simplifyUrl(prev.website),
-        }
-    );
-  };
-
   const toggleExposed = () => {
     if (!isEditing && !selectedPassword?.credentials.fields?.find((item) => item._id === field._id)?.isPassword) {
       return;
@@ -101,7 +86,6 @@ const Field = ({ field, isWebsite }: Props) => {
       <View style={styles.inputContainer}>
         <Text style={styles.title}>{field.title}</Text>
         <TextInput
-          onBlur={handleBlur}
           onChangeText={(text) => (isWebsite ? handleWebsiteChange(text) : handleChange(text))}
           selectionColor={StyleVars.accent}
           style={styles.input}
@@ -164,7 +148,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
   },
   inputContainer: {
     gap: 5,

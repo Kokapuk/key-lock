@@ -2,10 +2,11 @@ import useEditorStore from '@/store/editor';
 import StyleVars from '@/styles/styleVars';
 import { Field as FieldType } from '@/utils/types';
 import React, { useMemo } from 'react';
-import { KeyboardAvoidingView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Animated, { CurvedTransition, Easing, FadeIn, FadeOut, LayoutAnimationConfig } from 'react-native-reanimated';
 import Field from './Field';
+import Integration from './Integration';
 
 const Credentials = () => {
   const draftPassword = useEditorStore((st) => st.draftPassword);
@@ -23,7 +24,7 @@ const Credentials = () => {
   );
 
   if (!draftPassword) {
-    return;
+    return null;
   }
 
   return (
@@ -39,6 +40,16 @@ const Credentials = () => {
             <Field field={item} isWebsite={index === draftPassword.credentials.fields?.length} />
           </Animated.View>
         ))}
+        {!!draftPassword.credentials.integration && (
+          <Animated.View
+            key={draftPassword.credentials.integration._id}
+            entering={fieldAnimation.entering}
+            exiting={fieldAnimation.exiting}
+            layout={fieldAnimation.layout}
+          >
+            <Integration />
+          </Animated.View>
+        )}
       </ScrollView>
     </LayoutAnimationConfig>
   );
@@ -47,6 +58,7 @@ const Credentials = () => {
 const styles = StyleSheet.create({
   scrollView: {
     marginBottom: 15,
+    paddingHorizontal: 15,
   },
   container: {
     flexGrow: 1,

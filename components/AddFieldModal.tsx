@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Modal from './Modal';
-import Input from './Input';
-import Button from './Button';
-import Animated, { Easing, FadeIn, FadeOut } from 'react-native-reanimated';
-import StyleVars from '@/styles/styleVars';
-import { Field, Password } from '@/utils/types';
 import useEditorStore from '@/store/editor';
+import { Field, Password } from '@/utils/types';
 import { Types } from 'mongoose';
+import React, { useState } from 'react';
+import { StyleProp, StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Button from './Button';
+import Input from './Input';
+import Modal from './Modal';
 
-const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
+interface Props {
+  triggerStyle: StyleProp<ViewStyle>;
+  triggerIconStyle: StyleProp<TextStyle>;
+}
 
-function AddFieldModal() {
+function AddFieldModal({triggerStyle, triggerIconStyle}: Props) {
   const [isOpen, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const setDraftPassword = useEditorStore((state) => state.setDraftPassword);
@@ -45,14 +46,9 @@ function AddFieldModal() {
 
   return (
     <>
-      <AnimatedTouchableOpacity
-        style={styles.button}
-        onPress={() => setOpen(true)}
-        entering={FadeIn.duration(StyleVars.animationDuration).easing(Easing.out(Easing.ease))}
-        exiting={FadeOut.duration(StyleVars.animationDuration).easing(Easing.in(Easing.ease))}
-      >
-        <Icon name="add" style={styles.buttonIcon} />
-      </AnimatedTouchableOpacity>
+      <TouchableOpacity style={triggerStyle} onPress={() => setOpen(true)}>
+        <Icon name="add" style={triggerIconStyle} />
+      </TouchableOpacity>
       <Modal
         open={isOpen}
         onClose={() => setOpen(false)}
@@ -63,13 +59,12 @@ function AddFieldModal() {
               value={title}
               onChangeText={(title) => setTitle(title)}
               autoFocus
+              autoCapitalize='words'
               iconName="lock-closed"
               placeholder="Title"
               onSubmitEditing={createField}
             />
-            <Button style={styles.createButton} onPress={createField}>
-              Create
-            </Button>
+            <Button onPress={createField}>Create</Button>
           </View>
         }
       />
@@ -78,18 +73,8 @@ function AddFieldModal() {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    padding: 5,
-  },
-  buttonIcon: {
-    fontSize: 22,
-    color: 'rgba(255, 255, 255, .5)',
-  },
   form: {
     gap: 15,
-  },
-  createButton: {
-    width: 'auto',
   },
 });
 

@@ -1,4 +1,5 @@
 import StyleVars from '@/styles/styleVars';
+import { forwardRef } from 'react';
 import { StyleProp, StyleSheet, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Button from './Button';
@@ -6,34 +7,35 @@ import Button from './Button';
 interface Props {
   style?: StyleProp<ViewStyle>;
   iconName?: string;
+  onClear?(): void;
 }
 
-const Input = ({
-  style,
-  iconName,
-  ...props
-}: Props & Omit<TextInputProps, 'style' | 'placeholderTextColor' | 'selectionColor'>) => {
-  return (
-    <View style={[styles.container, style]}>
-      {iconName && <Icon style={styles.icon} name={iconName} />}
-      <TextInput
-        {...props}
-        style={styles.input}
-        placeholderTextColor={StyleVars.placeholder}
-        selectionColor={StyleVars.accent}
-        cursorColor={StyleVars.accent}
-      />
-      {props.returnKeyType === 'search' && (
-        <Button
-          style={styles.clearButton}
-          containerStyle={styles.clearButtonContainer}
-          iconStyle={styles.clearIcon}
-          iconName="close"
+const Input = forwardRef<TextInput, Props & Omit<TextInputProps, 'style' | 'placeholderTextColor' | 'selectionColor'>>(
+  ({ style, iconName, onClear, ...props }, ref) => {
+    return (
+      <View style={[styles.container, style]}>
+        {iconName && <Icon style={styles.icon} name={iconName} />}
+        <TextInput
+          {...props}
+          ref={ref}
+          style={styles.input}
+          placeholderTextColor={StyleVars.placeholder}
+          selectionColor={StyleVars.accent}
+          cursorColor={StyleVars.accent}
         />
-      )}
-    </View>
-  );
-};
+        {props.returnKeyType === 'search' && !!props.value && (
+          <Button
+            onPress={onClear}
+            style={styles.clearButton}
+            containerStyle={styles.clearButtonContainer}
+            iconStyle={styles.clearIcon}
+            iconName="close"
+          />
+        )}
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {

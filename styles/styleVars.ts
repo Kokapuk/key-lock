@@ -9,6 +9,7 @@ const StyleVars = {
   borderRadiusLarge: 10,
   screenPadding: 15,
   animationDuration: 200,
+  animationDurationLong: 300,
 };
 
 export default StyleVars;

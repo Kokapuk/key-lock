@@ -33,9 +33,10 @@ const Home = ({ navigation }: Props) => {
     <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
       <PasswordList
         passwords={passwords}
-        paginating={isFetching}
-        onPasswordPress={handlePasswordPress}
+        fetching={isFetching}
+        onPasswordSelect={handlePasswordPress}
         onEndReached={paginatePasswords}
+        onRefresh={fetchPasswords}
       />
     </SafeAreaView>
   );

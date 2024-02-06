@@ -1,20 +1,21 @@
 import StyleVars from '@/styles/styleVars';
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 import {
   ActivityIndicator,
   Pressable,
   PressableProps,
   StyleProp,
   StyleSheet,
-  Text,
   TextStyle,
   View,
   ViewStyle,
 } from 'react-native';
-import Animated, { Easing, FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import Animated, { Easing, FadeIn, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+
 const AnimatedActivityIndicator = Animated.createAnimatedComponent(ActivityIndicator);
+const AniamtedIcon = Animated.createAnimatedComponent(Icon);
 
 interface Props {
   children?: string;
@@ -27,16 +28,26 @@ interface Props {
 }
 
 const Button = ({
-  children,
-  style,
-  titleStyle,
-  containerStyle,
-  iconStyle,
-  iconName,
-  loading,
-  ...props
-}: Props & Omit<PressableProps, 'children' | 'style'>) => {
-  const layoutAnimation = useMemo(() => LinearTransition.duration(StyleVars.animationDuration).easing(Easing.ease), []);
+                  children,
+                  style,
+                  titleStyle,
+                  containerStyle,
+                  iconStyle,
+                  iconName,
+                  loading,
+                  ...props
+                }: Props & Omit<PressableProps, 'children' | 'style'>) => {
+
+  const contentOpacity = useSharedValue(1);
+
+  useEffect(() => {
+    contentOpacity.value = withTiming(loading ? 0 : 1, {
+      duration:  StyleVars.animationDuration,
+      easing: (loading ? Easing.in : Easing.out)(Easing.ease),
+    });
+  }, [loading]);
+
+  const animatedContentStyle = useAnimatedStyle(() => ({ opacity: contentOpacity.value }));
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -46,12 +57,16 @@ const Button = ({
         style={[styles.button, style]}
         android_ripple={{ color: 'rgba(255, 255, 255, 0.35)', ...props.android_ripple }}
       >
-        <Animated.View style={styles.buttonContent} layout={layoutAnimation}>
-          {!!iconName && <Icon name={iconName} style={[styles.icon, iconStyle]} />}
-          {!!children && <Text style={[styles.title, titleStyle]}>{children}</Text>}
+        <Animated.View style={styles.buttonContent}>
+          {!!iconName && <AniamtedIcon name={iconName} style={[styles.icon, iconStyle, animatedContentStyle]} />}
+          {!!children &&
+            <Animated.Text style={[styles.title, titleStyle, animatedContentStyle]}>{children}</Animated.Text>}
         </Animated.View>
         {loading && (
-          <AnimatedActivityIndicator color="white" entering={FadeIn} exiting={FadeOut} layout={layoutAnimation} />
+          <AnimatedActivityIndicator style={styles.activityIndicator}
+                                     color='white'
+                                     entering={FadeIn.duration(StyleVars.animationDuration).easing(Easing.out(Easing.ease))}
+                                     size={24} />
         )}
       </Pressable>
     </View>
@@ -71,6 +86,7 @@ const styles = StyleSheet.create({
     gap: 10,
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonContent: {
     gap: 5,
@@ -87,6 +103,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 20,
     textAlignVertical: 'center',
+  },
+  activityIndicator: {
+    position: 'absolute',
   },
 });
 
