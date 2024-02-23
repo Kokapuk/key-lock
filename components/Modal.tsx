@@ -1,7 +1,6 @@
 import StyleVars from '@/styles/styleVars';
-import { EventArg, NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { ReactNode, useEffect, useMemo } from 'react';
-import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { BackHandler, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { Portal } from 'react-native-paper';
 import Animated, {
@@ -29,7 +28,6 @@ interface Props {
 }
 
 const Modal = ({ open, onClose, title, children, sheetStyle, sheetContentStyle }: Props) => {
-  const navigation = useNavigation<NavigationProp<any>>();
   const offset = useSharedValue(0);
   const { bottom } = useSafeAreaInsets();
 
@@ -38,27 +36,14 @@ const Modal = ({ open, onClose, title, children, sheetStyle, sheetContentStyle }
       return;
     }
 
-    const handleRemove = (
-      event: EventArg<
-        'beforeRemove',
-        true,
-        {
-          action: Readonly<{
-            type: string;
-            payload?: object | undefined;
-            source?: string | undefined;
-            target?: string | undefined;
-          }>;
-        }
-      >
-    ) => {
-      event.preventDefault();
+    const handleGoingBack = () => {
       onClose?.();
-    };
+      return true;
+    }
 
-    navigation.addListener('beforeRemove', handleRemove);
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleGoingBack);
 
-    return () => navigation.removeListener('beforeRemove', handleRemove);
+    return () => backHandler.remove();
   }, [open]);
 
   const handleClose = () => {
@@ -75,12 +60,11 @@ const Modal = ({ open, onClose, title, children, sheetStyle, sheetContentStyle }
           offset.value = offsetDelta > 0 ? offsetDelta : 0;
         })
         .onFinalize((event) => {
-          if (offset.value < 75 && event.velocityY < 350) {
-            offset.value = withTiming(0, { duration: StyleVars.animationDuration, easing: Easing.inOut(Easing.ease) });
-            return;
+          if ((offset.value > 75 && event.velocityY > 0) || event.velocityY > 350) {
+            return runOnJS(handleClose)();
           }
-
-          runOnJS(handleClose)();
+          
+          offset.value = withTiming(0, { duration: StyleVars.animationDuration, easing: Easing.inOut(Easing.ease) });
         }),
     [onClose, offset.value]
   );

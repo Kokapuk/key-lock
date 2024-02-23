@@ -2,18 +2,19 @@ import useEditorStore from '@/store/editor';
 import { Field, Password } from '@/utils/types';
 import { Types } from 'mongoose';
 import React, { useState } from 'react';
-import { StyleProp, StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Button from './Button';
 import Input from './Input';
 import Modal from './Modal';
+import FieldTitleSelector from './FieldTitleSelector';
 
 interface Props {
   triggerStyle: StyleProp<ViewStyle>;
   triggerIconStyle: StyleProp<TextStyle>;
 }
 
-function AddFieldModal({triggerStyle, triggerIconStyle}: Props) {
+function AddFieldModal({ triggerStyle, triggerIconStyle }: Props) {
   const [isOpen, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const setDraftPassword = useEditorStore((state) => state.setDraftPassword);
@@ -55,11 +56,12 @@ function AddFieldModal({triggerStyle, triggerIconStyle}: Props) {
         title="Add field"
         children={
           <View style={styles.form}>
+            <FieldTitleSelector onSelect={setTitle} />
             <Input
               value={title}
               onChangeText={(title) => setTitle(title)}
               autoFocus
-              autoCapitalize='words'
+              autoCapitalize="words"
               iconName="lock-closed"
               placeholder="Title"
               onSubmitEditing={createField}

@@ -78,6 +78,7 @@ const CreatePasswordModal = ({ triggerStyle }: Props) => {
           returnKeyType="next"
           autoCapitalize='words'
           onSubmitEditing={() => websiteField.current?.focus()}
+          autoFocus
         />
         <Input
           value={website}
