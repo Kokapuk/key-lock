@@ -54,10 +54,10 @@ const DeletePasswordModal = ({ triggerStyle, triggerIconStyle }: Props) => {
           Are you sure you want to delete <Text style={styles.bold}>{selectedPassword.name}</Text>?
         </Text>
         <View style={styles.actions}>
-          <Button onPress={removePassword}>Yes</Button>
-          <Button style={styles.lowAttentionButton} onPress={() => setOpen(false)}>
-            No
+          <Button style={styles.lowAttentionButton} onPress={removePassword}>
+            Yes
           </Button>
+          <Button onPress={() => setOpen(false)}>No</Button>
         </View>
       </Modal>
     </>

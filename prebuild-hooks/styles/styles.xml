@@ -7,6 +7,9 @@
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="android:scrollbarThumbVertical">@color/scrollbarThumbColor</item>
     <item name="android:scrollbarThumbHorizontal">@color/scrollbarThumbColor</item>
+    <item name="android:colorControlActivated">@color/colorPrimary</item>
+    <item name="android:textColorHighlight">@color/colorPrimary</item>
+    <item name="android:statusBarColor">@color/colorPrimaryDark</item>
   </style>
   <style name="ResetEditText" parent="@android:style/Widget.EditText">
     <item name="android:padding">0dp</item>
