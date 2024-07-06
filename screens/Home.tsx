@@ -1,3 +1,4 @@
+import CreatePasswordModal from '@/components/CreatePasswordModal';
 import PasswordList from '@/components/PasswordList';
 import useAuthStore from '@/store/auth';
 import useEditorStore from '@/store/editor';
@@ -38,6 +39,7 @@ const Home = ({ navigation }: Props) => {
         onEndReached={paginatePasswords}
         onRefresh={fetchPasswords}
       />
+      <CreatePasswordModal />
     </SafeAreaView>
   );
 };

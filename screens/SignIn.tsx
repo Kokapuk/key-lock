@@ -1,9 +1,10 @@
 import AuthorityField from '@/components/AuthorityField';
+import Api from '@/utils/api';
 import Validator from '@/utils/validator';
-import { useRef, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useRef, useState } from 'react';
 import { TextInput } from 'react-native-gesture-handler';
 import Authority from './Authority';
-import Api from '@/utils/api';
 
 const SignIn = () => {
   const [error, setError] = useState<string | null>(null);
@@ -11,6 +12,13 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const passwordInputRef = useRef<TextInput>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const login = await AsyncStorage.getItem('login');
+      setLogin(login ?? '');
+    })();
+  }, []);
 
   const handleSubmit = async () => {
     const loginIssue = Validator.getLoginIssue(login);
@@ -25,7 +33,7 @@ const SignIn = () => {
 
     try {
       await Api.auth(login.trim(), password, 'signIn');
-      // localStorage.setItem('login', login);
+      await AsyncStorage.setItem('login', login);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

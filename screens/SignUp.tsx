@@ -4,6 +4,7 @@ import Authority from './Authority';
 import Validator from '@/utils/validator';
 import Api from '@/utils/api';
 import { TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignUp = () => {
   const [error, setError] = useState<string | null>(null);
@@ -13,7 +14,6 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const passwordInputRef = useRef<TextInput>(null);
   const confirmPasswordInputRef = useRef<TextInput>(null);
-  
 
   const handleSubmit = async () => {
     const loginIssue = Validator.getLoginIssue(login);
@@ -29,7 +29,7 @@ const SignUp = () => {
 
     try {
       await Api.auth(login, password, 'signUp');
-      // localStorage.setItem('login', credentials.login);
+      await AsyncStorage.setItem('login', login);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

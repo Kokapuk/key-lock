@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   alternativeActionContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 2,
+    gap: 5,
   },
   question: {
     fontSize: 13,

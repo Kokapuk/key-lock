@@ -112,7 +112,7 @@ const Field = ({ field, isWebsite }: Props) => {
             entering={FadeIn.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
             exiting={FadeOut.duration(StyleVars.animationDuration).easing(Easing.inOut(Easing.ease))}
           >
-            <Icon style={styles.buttonIcon} name="key" />
+            <Icon style={styles.buttonIcon} name="dice" />
           </AnimatedTouchableOpacity>
         </>
       )}

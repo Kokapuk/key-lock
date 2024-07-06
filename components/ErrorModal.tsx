@@ -3,7 +3,6 @@ import Modal from '@/components/Modal';
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 
-
 interface Props {
   title: string;
   message: string;
@@ -24,10 +23,7 @@ const ErrorModal = ({ title, message, openTrigger }: Props) => {
   }, [openTrigger]);
 
   return (
-    <Modal title={title}
-           open={isOpen}
-           onClose={() => setIsOpen(false)}
-           sheetContentStyle={styles.container}>
+    <Modal title={title} open={isOpen} onClose={() => setIsOpen(false)} sheetContentStyle={styles.container}>
       <Text style={styles.message}>{message}</Text>
       <Button onPress={() => setIsOpen(false)}>Ok</Button>
     </Modal>

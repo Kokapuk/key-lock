@@ -1,20 +1,18 @@
 import Button from '@/components/Button';
-import Input from '@/components/Input';
 import ErrorModal from '@/components/ErrorModal';
+import Input from '@/components/Input';
 import Modal from '@/components/Modal';
 import useEditorStore from '@/store/editor';
 import usePasswordsStore from '@/store/passwords';
+import StyleVars from '@/styles/styleVars';
 import Api from '@/utils/api';
 import simplifyUrl from '@/utils/simplifyUrl';
-import React, { useRef, useState } from 'react';
-import { Keyboard, StyleProp, StyleSheet, TextInput, ViewStyle } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import React, { useRef, useState } from 'react';
+import { Keyboard, StyleSheet, TextInput } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-interface Props {
-  triggerStyle: StyleProp<ViewStyle>;
-}
-
-const CreatePasswordModal = ({ triggerStyle }: Props) => {
+const CreatePasswordModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState('');
   const [website, setWebsite] = useState('');
@@ -26,6 +24,7 @@ const CreatePasswordModal = ({ triggerStyle }: Props) => {
   const setSelectedPassword = useEditorStore((state) => state.setSelectedPassword);
   const websiteField = useRef<TextInput>(null);
   const navigation = useNavigation<NavigationProp<any>>();
+  const { bottom: safeBottom } = useSafeAreaInsets();
 
   const createPassword = async () => {
     Keyboard.dismiss();
@@ -68,7 +67,7 @@ const CreatePasswordModal = ({ triggerStyle }: Props) => {
         open={isOpen}
         onClose={isLoading ? undefined : () => setIsOpen(false)}
         title="Create password"
-        sheetContentStyle={styles.container}
+        sheetContentStyle={styles.modalContainer}
       >
         <Input
           value={name}
@@ -76,7 +75,7 @@ const CreatePasswordModal = ({ triggerStyle }: Props) => {
           iconName="lock-closed"
           placeholder="Name"
           returnKeyType="next"
-          autoCapitalize='words'
+          autoCapitalize="words"
           onSubmitEditing={() => websiteField.current?.focus()}
           autoFocus
         />
@@ -96,15 +95,36 @@ const CreatePasswordModal = ({ triggerStyle }: Props) => {
         </Button>
       </Modal>
       <ErrorModal title={errorTitle} message={errorMessage} openTrigger={errorOpenTrigger} />
-      <Button onPress={() => setIsOpen(true)} style={triggerStyle} iconName="add" />
+      <Button
+        onPress={() => setIsOpen(true)}
+        containerStyle={[styles.addButtonContainer, { bottom: safeBottom + 10 }]}
+        style={styles.addButton}
+        iconStyle={styles.addButtonIcon}
+        iconName="add"
+      />
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  modalContainer: {
     gap: 15,
     alignItems: 'center',
+  },
+  addButtonContainer: {
+    borderRadius: 25,
+    alignSelf: 'flex-start',
+    position: 'absolute',
+    right: StyleVars.screenPadding,
+  },
+  addButton: {
+    height: 50,
+    width: 50,
+    fontSize: 50,
+  },
+  addButtonIcon: {
+    fontSize: 24,
+    lineHeight: 24,
   },
 });
 

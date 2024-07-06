@@ -1,4 +1,3 @@
-import CreatePasswordModal from '@/components/CreatePasswordModal';
 import usePasswordsStore from '@/store/passwords';
 import StyleVars from '@/styles/styleVars';
 import { StyleSheet, View } from 'react-native';
@@ -12,7 +11,6 @@ const SearchHeader = () => {
     <SafeAreaView style={styles.header} edges={['top', 'right', 'left']}>
       <View style={styles.container}>
         <Search totalCount={totalCount} onQueryUpdate={fetchPasswords} inputStyle={styles.input} />
-        <CreatePasswordModal triggerStyle={styles.addButton} />
       </View>
     </SafeAreaView>
   );

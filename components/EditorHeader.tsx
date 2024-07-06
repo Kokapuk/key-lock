@@ -12,7 +12,6 @@ import Button from './Button';
 import DeletePasswordModal from './DeletePasswordModal';
 import IconButton from './IconButton';
 
-
 const EditorHeader = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const { selectedPassword, isEditing, draftPassword, setEditing, setDraftPassword, savePassword, isLoading } =
@@ -32,11 +31,11 @@ const EditorHeader = () => {
     Keyboard.dismiss();
 
     if (!validateHostname(simplifyUrl(draftPassword.website))) {
-      setInvalidCredentialsTrigger(prev => prev + 1);
+      setInvalidCredentialsTrigger((prev) => prev + 1);
       return;
     }
 
-    setDraftPassword(prev => prev ? ({ ...prev, website: simplifyUrl(prev.website) }) : undefined);
+    setDraftPassword((prev) => (prev ? { ...prev, website: simplifyUrl(prev.website) } : undefined));
     savePassword();
   };
 
@@ -46,7 +45,7 @@ const EditorHeader = () => {
         <LayoutAnimationConfig skipEntering>
           {isEditing ? (
             <Animated.View
-              key='editing'
+              key="editing"
               style={styles.container}
               entering={FadeIn.delay(StyleVars.animationDuration)
                 .duration(StyleVars.animationDuration)
@@ -57,20 +56,20 @@ const EditorHeader = () => {
                 disabled={isLoading}
                 style={[styles.iconButton, styles.separatedButton]}
                 onPress={handleCancel}
-                iconName='close'
+                iconName="close"
                 iconStyle={styles.iconButtonIcon}
               />
               <IconButton
                 style={styles.iconButton}
                 iconStyle={styles.iconButtonIcon}
-                iconName='checkmark'
+                iconName="checkmark"
                 onPress={handleSavePassword}
                 loading={isLoading}
               />
             </Animated.View>
           ) : (
             <Animated.View
-              key='viewing'
+              key="viewing"
               style={styles.container}
               entering={FadeIn.delay(StyleVars.animationDuration)
                 .duration(StyleVars.animationDuration)
@@ -81,7 +80,7 @@ const EditorHeader = () => {
                 disabled={isLoading}
                 style={[styles.iconButton, styles.separatedButton]}
                 onPress={() => navigation.goBack()}
-                iconName='arrow-back'
+                iconName="arrow-back"
                 iconStyle={styles.iconButtonIcon}
               />
               <DeletePasswordModal triggerIconStyle={styles.buttonIcon} triggerStyle={styles.button} />
@@ -89,7 +88,7 @@ const EditorHeader = () => {
                 disabled={isLoading}
                 style={styles.button}
                 iconStyle={styles.buttonIcon}
-                iconName='pencil'
+                iconName="pencil"
                 onPress={() => setEditing(true)}
               >
                 Edit
@@ -98,8 +97,11 @@ const EditorHeader = () => {
           )}
         </LayoutAnimationConfig>
       </SafeAreaView>
-      <ErrorModal message='"Website" field has wrong value, make sure you provide a valid domain name'
-                  openTrigger={invalidCredentialsTrigger} />
+      <ErrorModal
+        title="Error"
+        message='"Website" field has wrong value, make sure you provide a valid domain name'
+        openTrigger={invalidCredentialsTrigger}
+      />
     </>
   );
 };

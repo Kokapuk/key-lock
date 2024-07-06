@@ -13,7 +13,6 @@ import {
 import Animated, { Easing, FadeIn, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-
 const AnimatedActivityIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const AniamtedIcon = Animated.createAnimatedComponent(Icon);
 
@@ -28,21 +27,20 @@ interface Props {
 }
 
 const Button = ({
-                  children,
-                  style,
-                  titleStyle,
-                  containerStyle,
-                  iconStyle,
-                  iconName,
-                  loading,
-                  ...props
-                }: Props & Omit<PressableProps, 'children' | 'style'>) => {
-
+  children,
+  style,
+  titleStyle,
+  containerStyle,
+  iconStyle,
+  iconName,
+  loading,
+  ...props
+}: Props & Omit<PressableProps, 'children' | 'style'>) => {
   const contentOpacity = useSharedValue(1);
 
   useEffect(() => {
     contentOpacity.value = withTiming(loading ? 0 : 1, {
-      duration:  StyleVars.animationDuration,
+      duration: StyleVars.animationDuration,
       easing: (loading ? Easing.in : Easing.out)(Easing.ease),
     });
   }, [loading]);
@@ -59,14 +57,17 @@ const Button = ({
       >
         <Animated.View style={styles.buttonContent}>
           {!!iconName && <AniamtedIcon name={iconName} style={[styles.icon, iconStyle, animatedContentStyle]} />}
-          {!!children &&
-            <Animated.Text style={[styles.title, titleStyle, animatedContentStyle]}>{children}</Animated.Text>}
+          {!!children && (
+            <Animated.Text style={[styles.title, titleStyle, animatedContentStyle]}>{children}</Animated.Text>
+          )}
         </Animated.View>
         {loading && (
-          <AnimatedActivityIndicator style={styles.activityIndicator}
-                                     color='white'
-                                     entering={FadeIn.duration(StyleVars.animationDuration).easing(Easing.out(Easing.ease))}
-                                     size={24} />
+          <AnimatedActivityIndicator
+            style={styles.activityIndicator}
+            color="white"
+            entering={FadeIn.duration(StyleVars.animationDuration).easing(Easing.out(Easing.ease))}
+            size={24}
+          />
         )}
       </Pressable>
     </View>
